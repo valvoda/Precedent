@@ -493,9 +493,9 @@ class Classifier:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--seq_length", type=int, default=1000, required=False)
+    parser.add_argument("--seq_length", type=int, default=512, required=False)
     parser.add_argument("--max_length", type=int, default=4096, required=False)
-    parser.add_argument("--batch_size", type=int, default=32, required=False)
+    parser.add_argument("--batch_size", type=int, default=16, required=False)
     parser.add_argument("--learning_rate", type=float, default=3e-5, required=False)
     parser.add_argument("--dropout", type=float, default=0.2, required=False)
     parser.add_argument("--n_hidden", type=float, default=50, required=False)
@@ -503,25 +503,9 @@ if __name__ == '__main__':
     parser.add_argument("--arg", dest='bin', action='store_true')
 
     args = parser.parse_args()
-
     print(args)
 
     cl = Classifier()
 
     cl.run(epochs=10, binary=args.bin, max_len=args.max_length, batch_size=args.batch_size,
            lr=args.learning_rate, dropout=args.dropout, n_hidden=args.n_hidden, seq_len=args.seq_length, arg=args.arg)
-
-    # if args.ano_bin:
-    #     print("ANO | BIN")
-    #     cl.run(anon=True, epochs=10, binary=True, max_len=args.max_length, batch_size=args.batch_size, lr=args.learning_rate, dropout=args.dropout, n_hidden=args.n_hidden)
-    # elif args.bin:
-    #     print("NON-ANO | BIN")
-    #     cl.run(anon=False, epochs=10, binary=True, max_len=args.max_length, batch_size=args.batch_size, lr=args.learning_rate, dropout=args.dropout, n_hidden=args.n_hidden)
-    # elif args.multi:
-    #     print("NON-ANO | MULTI")
-    #     cl.run(anon=False, epochs=10, binary=False, max_len=args.max_length, batch_size=args.batch_size, lr=args.learning_rate, dropout=args.dropout, n_hidden=args.n_hidden)
-    # elif args.ano_multi:
-    #     print("ANO | MULTI")
-    #     cl.run(anon=True, epochs=10, binary=False, max_len=args.max_length, batch_size=args.batch_size, lr=args.learning_rate, dropout=args.dropout, n_hidden=args.n_hidden)
-    # else:
-    #     print("Select a valid experiment.")
