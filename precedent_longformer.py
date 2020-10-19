@@ -549,7 +549,7 @@ if __name__ == '__main__':
     parser.add_argument("--learning_rate", type=float, default=3e-5, required=False)
     parser.add_argument("--dropout", type=float, default=0.2, required=False)
     parser.add_argument("--n_hidden", type=float, default=50, required=False)
-    parser.add_argument("--data_type", type=str, default="precedent_facts", required=False)
+    parser.add_argument("--data_type", type=str, default="precedent_arguments", required=False)
     parser.add_argument("--bin", dest='bin', action='store_true')
 
     args = parser.parse_args()
