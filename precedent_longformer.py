@@ -451,10 +451,10 @@ class Classifier:
         with open("pretokenized/"+data_type+"/tokenized_train.pkl", "rb") as f:
             train_inputs, train_masks, train_labels = pickle.load(f)
 
-        with open("pretokenized/"+data_type+"tokenized_val.pkl", "rb") as f:
+        with open("pretokenized/"+data_type+"/tokenized_val.pkl", "rb") as f:
             val_inputs, val_masks, val_labels = pickle.load(f)
 
-        with open("pretokenized/"+data_type+"tokenized_test.pkl", "rb") as f:
+        with open("pretokenized/"+data_type+"/tokenized_test.pkl", "rb") as f:
             test_inputs, test_masks, test_labels = pickle.load(f)
 
         out_dim = len(train_labels[1])
@@ -492,12 +492,22 @@ class Classifier:
                                                                                                                                                  loss_fn=loss_fn, optimizer=optimizer, scheduler=scheduler,
                                                                                                                                                  binary=binary)
 
-        self.log_saver(val_precission, val_recall, val_f1, test_precission, test_recall, test_f1, model_name, data_type, dropout, lr, batch_size, n_hidden, val_loss, test_loss)
+        # val_loss, val_precission, val_recall, val_f1, test_loss, test_precission, test_recall, test_f1, model_name, all_test_losses = 1, 1, 1, 1, 1, 1, 1, 1, "test", [1, 2, 3, 4, 5]
+
+        self.log_saver(val_precission, val_recall, val_f1, test_precission, test_recall, test_f1, model_name, data_type, dropout, lr, batch_size, n_hidden, val_loss, test_loss, all_test_losses)
+
+
 
         return val_loss, val_precission, val_recall, val_f1, test_precission, test_recall, test_f1, model_name
 
 
-    def log_saver(self, dev_precission, dev_recall, dev_f1, test_precission, test_recall, test_f1, model_name, model_type, dropout, lr, batch_size, n_hidden, dev_loss, test_loss):
+    def log_saver(self, dev_precission, dev_recall, dev_f1, test_precission, test_recall, test_f1, model_name, model_type, dropout, lr, batch_size, n_hidden, dev_loss, test_loss, all_test_losses):
+
+        with open(model_name + "_losses.csv", 'w') as loss_file:
+            for line in all_test_losses:
+                loss_file.write(str(line))
+                loss_file.write('\n')
+
         csv_columns = ["model_name", "model_type", "dropout", "lr", "batch_size", "n_hidden", "dev_precission", "dev_recall", "dev_f1", "test_precission", "test_recall", "test_f1", "dev_loss", "test_loss"]
         new_dict_data = [
             {"model_name": model_name, "model_type": model_type, "dropout": dropout, "lr": lr, "batch_size": batch_size, "n_hidden": n_hidden, "dev_precission": dev_precission, "dev_recall": dev_recall, "dev_f1": dev_f1, "test_precission": test_precission, "test_recall":test_recall, "test_f1":test_f1, "dev_loss":dev_loss, "test_loss":test_loss}
