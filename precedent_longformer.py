@@ -23,6 +23,7 @@ import argparse
 import uuid
 
 from tqdm import tqdm
+import csv
 
 # Create the BertClassfier class
 class BertClassifier(nn.Module):
@@ -273,7 +274,7 @@ class Classifier:
             if evaluation == True:
                 # After the completion of each training epoch, measure the model's performance
                 # on our validation set.
-                val_loss, val_accuracy, val_f1_micro, val_prec_micro, val_rec_micro = self.evaluate(model, val_dataloader, loss_fn, binary)
+                val_loss, val_accuracy, val_f1_micro, val_prec_micro, val_rec_micro, _ = self.evaluate(model, val_dataloader, loss_fn, binary)
 
                 if val_loss < best_loss:
                     best_loss = val_loss
@@ -298,9 +299,9 @@ class Classifier:
 
         print("Training complete!")
 
-        val_loss, val_accuracy, val_f1_micro, val_prec_micro, val_rec_micro = self.evaluate(model, val_dataloader, loss_fn, binary)
+        val_loss, val_accuracy, val_f1_micro, val_prec_micro, val_rec_micro, all_val_losses = self.evaluate(model, val_dataloader, loss_fn, binary)
         print(f"Best val loss: {best_loss}, recorded val loss: {val_loss}")
-        test_loss, test_accuracy, test_f1_micro, test_prec_micro, test_rec_micro = self.evaluate(model, test_dataloader, loss_fn, binary)
+        test_loss, test_accuracy, test_f1_micro, test_prec_micro, test_rec_micro, all_test_losses = self.evaluate(model, test_dataloader, loss_fn, binary)
 
         # Print performance over the entire training data
         print(
@@ -308,7 +309,7 @@ class Classifier:
         print("-" * 40)
         print(f"{test_loss:^12.6f} | {test_accuracy:^9.2f} | {test_f1_micro:^9.2f} | {test_prec_micro:^9.2f} | {test_rec_micro:^9.2f}")
 
-        return val_loss, val_prec_micro, val_rec_micro, val_f1_micro, test_prec_micro, test_rec_micro, test_f1_micro, unique_id
+        return val_loss, val_prec_micro, val_rec_micro, val_f1_micro, test_loss, test_prec_micro, test_rec_micro, test_f1_micro, unique_id, all_test_losses
 
 
     def evaluate(self, model, val_dataloader, loss_fn, binary):
@@ -372,7 +373,7 @@ class Classifier:
                 all_preds += preds.cpu().float().tolist()
 
         # Compute the average accuracy and loss over the validation set.
-        val_loss = np.mean(val_loss)
+        avg_val_loss = np.mean(val_loss)
         val_accuracy = np.mean(val_accuracy)
 
         # tp, tn, fn, fp = 0, 0, 0, 0
@@ -399,7 +400,7 @@ class Classifier:
             val_prec = precision_score(all_labels, all_preds, average="micro") * 100
             val_rec = recall_score(all_labels, all_preds, average="micro") * 100
 
-        return val_loss, val_accuracy, val_f1, val_prec, val_rec
+        return avg_val_loss, val_accuracy, val_f1, val_prec, val_rec, val_loss
 
     def get_data(self, src_path='ECHR/EN_train', binary=True, seq_len=100):
 
@@ -486,26 +487,59 @@ class Classifier:
 
         # set_seed(42)    # Set seed for reproducibility
         classifier, optimizer, scheduler = self.initialize_model(out_dim=out_dim, epochs=epochs, train_dataloader=train_dataloader, learning_rate=lr, dropout=dropout, n_hidden=n_hidden)
-        val_loss, val_precission, val_recall, val_f1, test_precission, test_recall, test_f1, model_name = self.train(classifier, train_dataloader, val_dataloader, test_dataloader, epochs=epochs, evaluation=True, loss_fn=loss_fn,
-              optimizer=optimizer, scheduler=scheduler, binary=binary)
+        val_loss, val_precission, val_recall, val_f1, test_loss, test_precission, test_recall, test_f1, model_name, all_test_losses = self.train(classifier, train_dataloader, val_dataloader,
+                                                                                                                                                test_dataloader, epochs=epochs, evaluation=True,
+                                                                                                                                                 loss_fn=loss_fn, optimizer=optimizer, scheduler=scheduler,
+                                                                                                                                                 binary=binary)
+
+        self.log_saver(val_precission, val_recall, val_f1, test_precission, test_recall, test_f1, model_name, data_type, dropout, lr, batch_size, n_hidden, val_loss, test_loss)
 
         return val_loss, val_precission, val_recall, val_f1, test_precission, test_recall, test_f1, model_name
+
+
+    def log_saver(self, dev_precission, dev_recall, dev_f1, test_precission, test_recall, test_f1, model_name, model_type, dropout, lr, batch_size, n_hidden, dev_loss, test_loss):
+        csv_columns = ["model_name", "model_type", "dropout", "lr", "batch_size", "n_hidden", "dev_precission", "dev_recall", "dev_f1", "test_precission", "test_recall", "test_f1", "dev_loss", "test_loss"]
+        new_dict_data = [
+            {"model_name": model_name, "model_type": model_type, "dropout": dropout, "lr": lr, "batch_size": batch_size, "n_hidden": n_hidden, "dev_precission": dev_precission, "dev_recall": dev_recall, "dev_f1": dev_f1, "test_precission": test_precission, "test_recall":test_recall, "test_f1":test_f1, "dev_loss":dev_loss, "test_loss":test_loss}
+        ]
+
+        csv_file = model_type + "_results.csv"
+
+        if os.path.isfile(csv_file):
+            try:
+                with open(csv_file, 'a') as csvfile:
+                    writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
+                    for data in new_dict_data:
+                        writer.writerow(data)
+
+            except IOError:
+                print("I/O error")
+
+        else:
+            try:
+                with open(csv_file, 'w') as csvfile:
+                    writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
+                    writer.writeheader()
+                    for data in new_dict_data:
+                        writer.writerow(data)
+
+            except IOError:
+                print("I/O error")
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--seq_length", type=int, default=512, required=False)
-    parser.add_argument("--max_length", type=int, default=4096, required=False)
+    parser.add_argument("--max_length", type=int, default=3072, required=False)
     parser.add_argument("--batch_size", type=int, default=16, required=False)
     parser.add_argument("--learning_rate", type=float, default=3e-5, required=False)
     parser.add_argument("--dropout", type=float, default=0.2, required=False)
     parser.add_argument("--n_hidden", type=float, default=50, required=False)
-    parser.add_argument("--bin", dest='bin', action='store_true')
-    parser.add_argument("--arg", dest='bin', action='store_true')
+    parser.add_argument("--data_type", type=str, default="precedent_facts", required=False)
 
     args = parser.parse_args()
     print(args)
 
     cl = Classifier()
-
     cl.run(epochs=10, binary=args.bin, max_len=args.max_length, batch_size=args.batch_size,
-           lr=args.learning_rate, dropout=args.dropout, n_hidden=args.n_hidden, seq_len=args.seq_length, arg=args.arg)
+           lr=args.learning_rate, dropout=args.dropout, n_hidden=args.n_hidden, seq_len=args.seq_length, data_type=args.data_type)

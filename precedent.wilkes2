@@ -62,7 +62,7 @@ source ~/.bashrc
 source activate seqlaw
 
 #! Run options for the application:
-options="--batch_size 16 --max_length 4096 --seq_length 1000"
+options=""
 
 #! Work directory (i.e. where the job will run):
 workdir="$SLURM_SUBMIT_DIR"  # The value of SLURM_SUBMIT_DIR sets workdir to the directory
