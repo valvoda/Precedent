@@ -457,6 +457,10 @@ class Classifier:
         with open("pretokenized/"+data_type+"/tokenized_test.pkl", "rb") as f:
             test_inputs, test_masks, test_labels = pickle.load(f)
 
+        train_inputs, train_masks = train_inputs[:, :, :1024], train_masks[:, :, :1024]
+        val_inputs, val_masks = val_inputs[:, :, :1024], val_masks[:, :, :1024]
+        test_inputs, test_masks = test_inputs[:, :, :1024], test_masks[:, :, :1024]
+
         out_dim = len(train_labels[1])
         print("Classifying into: ", out_dim)
         print("DONE Loading")
