@@ -234,10 +234,11 @@ class Classifier:
                 # Compute loss and accumulate the loss values
 
                 if binary:
-                    loss = loss_fn(logits, b_labels)
+                    loss_each = loss_fn(logits, b_labels)
                 else:
-                    loss = loss_fn(logits, b_labels.float())
+                    loss_each = loss_fn(logits, b_labels.float())
 
+                loss = torch.mean(loss_each)
                 batch_loss += loss.detach().item()
                 total_loss += loss.detach().item()
 
@@ -327,6 +328,8 @@ class Classifier:
         all_labels = []
         all_preds = []
 
+        all_loss = []
+
         # For each batch in our validation set...
         for batch in val_dataloader:
             # Load batch to GPU
@@ -344,9 +347,13 @@ class Classifier:
 
             # Compute loss
             if binary:
-                loss = loss_fn(logits, b_labels)
+                loss_each = loss_fn(logits, b_labels)
             else:
-                loss = loss_fn(logits, b_labels.float())
+                loss_each = loss_fn(logits, b_labels.float())
+
+            all_loss.append(loss_each.detach().tolist())
+
+            loss = torch.mean(loss_each)
             val_loss.append(loss.item())
 
             # Get the predictions
@@ -400,7 +407,7 @@ class Classifier:
             val_prec = precision_score(all_labels, all_preds, average="micro") * 100
             val_rec = recall_score(all_labels, all_preds, average="micro") * 100
 
-        return avg_val_loss, val_accuracy, val_f1, val_prec, val_rec, val_loss
+        return avg_val_loss, val_accuracy, val_f1, val_prec, val_rec, all_loss
 
     def get_data(self, src_path='ECHR/EN_train', binary=True, seq_len=100):
 
@@ -461,6 +468,25 @@ class Classifier:
         val_inputs, val_masks = val_inputs[:, :, :1024], val_masks[:, :, :1024]
         test_inputs, test_masks = test_inputs[:, :, :1024], test_masks[:, :, :1024]
 
+
+        # For testing purposes:
+        # train_inputs, train_masks = train_inputs[:10, :, :10], train_masks[:10, :, :10]
+        # val_inputs, val_masks = val_inputs[:10, :, :10], val_masks[:10, :, :10]
+        # test_inputs, test_masks = test_inputs[:10, :, :10], test_masks[:10, :, :10]
+        #
+        # train_labels = train_labels[:10, :]
+        # val_labels = val_labels[:10, :]
+        # test_labels = test_labels[:10, :]
+        #
+        # test_inputs = test_inputs.squeeze(1)
+        # train_inputs = train_inputs.squeeze(1)
+        # val_inputs = val_inputs.squeeze(1)
+        #
+        # test_masks = test_masks.squeeze(1)
+        # train_masks = train_masks.squeeze(1)
+        # val_masks = val_masks.squeeze(1)
+        # END
+
         out_dim = len(train_labels[1])
         print("Classifying into: ", out_dim)
         print("DONE Loading")
@@ -485,9 +511,9 @@ class Classifier:
 
         # Specify loss function
         if binary:
-            loss_fn = nn.CrossEntropyLoss()
+            loss_fn = nn.CrossEntropyLoss(reduction='none')
         else:
-            loss_fn = nn.BCEWithLogitsLoss()
+            loss_fn = nn.BCEWithLogitsLoss(reduction='none')
 
         # set_seed(42)    # Set seed for reproducibility
         classifier, optimizer, scheduler = self.initialize_model(out_dim=out_dim, epochs=epochs, train_dataloader=train_dataloader, learning_rate=lr, dropout=dropout, n_hidden=n_hidden)
