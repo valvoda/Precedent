@@ -468,7 +468,7 @@ class Classifier:
             test_inputs, test_masks, test_labels, test_ids = pickle.load(f)
 
 
-        if data_type == "facts":
+        if data_type == "facts" or data_type == "arguments":
             train_inputs, train_masks = train_inputs[:, :, :512], train_masks[:, :, :512]
             val_inputs, val_masks = val_inputs[:, :, :512], val_masks[:, :, :512]
             test_inputs, test_masks = test_inputs[:, :, :512], test_masks[:, :, :512]
