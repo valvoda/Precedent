@@ -577,7 +577,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--seq_length", type=int, default=512, required=False)
     parser.add_argument("--max_length", type=int, default=3072, required=False)
-    parser.add_argument("--batch_size", type=int, default=2, required=False)
+    parser.add_argument("--batch_size", type=int, default=16, required=False)
     parser.add_argument("--learning_rate", type=float, default=3e-5, required=False)
     parser.add_argument("--dropout", type=float, default=0.2, required=False)
     parser.add_argument("--n_hidden", type=float, default=50, required=False)
@@ -588,5 +588,5 @@ if __name__ == '__main__':
     print(args)
 
     cl = Classifier()
-    cl.run(epochs=1, binary=args.bin, max_len=args.max_length, batch_size=args.batch_size,
+    cl.run(epochs=10, binary=args.bin, max_len=args.max_length, batch_size=args.batch_size,
            lr=args.learning_rate, dropout=args.dropout, n_hidden=args.n_hidden, seq_len=args.seq_length, data_type=args.data_type)
