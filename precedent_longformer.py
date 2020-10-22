@@ -467,10 +467,16 @@ class Classifier:
         with open("pretokenized/"+data_type+"/tokenized_test.pkl", "rb") as f:
             test_inputs, test_masks, test_labels, test_ids = pickle.load(f)
 
-        train_inputs, train_masks = train_inputs[:, :, :1536], train_masks[:, :, :1536]
-        val_inputs, val_masks = val_inputs[:, :, :1536], val_masks[:, :, :1536]
-        test_inputs, test_masks = test_inputs[:, :, :1536], test_masks[:, :, :1536]
 
+        if data_type == "facts":
+            train_inputs, train_masks = train_inputs[:, :, :512], train_masks[:, :, :512]
+            val_inputs, val_masks = val_inputs[:, :, :512], val_masks[:, :, :512]
+            test_inputs, test_masks = test_inputs[:, :, :512], test_masks[:, :, :512]
+
+        else:
+            train_inputs, train_masks = train_inputs[:, :, :1536], train_masks[:, :, :1536]
+            val_inputs, val_masks = val_inputs[:, :, :1536], val_masks[:, :, :1536]
+            test_inputs, test_masks = test_inputs[:, :, :1536], test_masks[:, :, :1536]
 
         # For testing purposes:
         # train_inputs, train_masks = train_inputs[:10, :, :10], train_masks[:10, :, :10]

@@ -62,7 +62,7 @@ source ~/.bashrc
 source activate seqlaw
 
 #! Run options for the application:
-options="--data_type 'facts'"
+options="--data_type 'precedent_facts'"
 
 #! Work directory (i.e. where the job will run):
 workdir="$SLURM_SUBMIT_DIR"  # The value of SLURM_SUBMIT_DIR sets workdir to the directory
