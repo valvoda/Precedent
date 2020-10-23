@@ -474,9 +474,11 @@ class Classifier:
             test_inputs, test_masks = test_inputs[:, :, :512], test_masks[:, :, :512]
 
         else:
-            train_inputs, train_masks = train_inputs[:, :, :1536], train_masks[:, :, :1536]
-            val_inputs, val_masks = val_inputs[:, :, :1536], val_masks[:, :, :1536]
-            test_inputs, test_masks = test_inputs[:, :, :1536], test_masks[:, :, :1536]
+            train_inputs, train_masks = train_inputs[:, :, :1024], train_masks[:, :, :1024]
+            val_inputs, val_masks = val_inputs[:, :, :1024], val_masks[:, :, :1024]
+            test_inputs, test_masks = test_inputs[:, :, :1024], test_masks[:, :, :1024]
+
+        # old 1536
 
         # For testing purposes:
         # train_inputs, train_masks = train_inputs[:10, :, :10], train_masks[:10, :, :10]
@@ -583,7 +585,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--seq_length", type=int, default=512, required=False)
     parser.add_argument("--max_length", type=int, default=3072, required=False)
-    parser.add_argument("--batch_size", type=int, default=16, required=False)
+    parser.add_argument("--batch_size", type=int, default=32, required=False)
     parser.add_argument("--learning_rate", type=float, default=3e-5, required=False)
     parser.add_argument("--dropout", type=float, default=0.2, required=False)
     parser.add_argument("--n_hidden", type=float, default=50, required=False)
