@@ -550,7 +550,7 @@ class Classifier:
     def log_saver(self, dev_precission, dev_recall, dev_f1, test_precission, test_recall, test_f1, model_name, model_type, dropout, lr, batch_size, n_hidden, dev_loss, test_loss, all_test_losses, all_test_preds,  all_test_truths, test_ids):
 
 
-        with open("models/" + model_type + "_preds.csv", 'w') as loss_file:
+        with open("models/16_" + model_type + "_preds.csv", 'w') as loss_file:
             writer = csv.writer(loss_file)
             for t_id, loss, pred, truth in zip(test_ids, all_test_losses, all_test_preds, all_test_truths):
                 writer.writerow([t_id, loss, pred, truth])
@@ -560,7 +560,7 @@ class Classifier:
             {"model_name": model_name, "model_type": model_type, "dropout": dropout, "lr": lr, "batch_size": batch_size, "n_hidden": n_hidden, "dev_precission": dev_precission, "dev_recall": dev_recall, "dev_f1": dev_f1, "test_precission": test_precission, "test_recall":test_recall, "test_f1":test_f1, "dev_loss":dev_loss, "test_loss":test_loss}
         ]
 
-        csv_file = "models/" + model_type + "_results.csv"
+        csv_file = "models/16_" + model_type + "_results.csv"
 
         if os.path.isfile(csv_file):
             try:
