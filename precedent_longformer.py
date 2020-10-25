@@ -456,7 +456,7 @@ class Classifier:
 
         return np.array(all_text), y
 
-    def run(self, epochs=2, binary=True, batch_size=32, max_len=4096, lr=3e-5, dropout=0.2, n_hidden=50, seq_len=100, data_type="precedent_facts"):
+    def run(self, epochs=2, binary=True, batch_size=16, max_len=4096, lr=3e-5, dropout=0.2, n_hidden=50, seq_len=100, data_type="precedent_facts"):
 
         with open("pretokenized/"+data_type+"/tokenized_train.pkl", "rb") as f:
             train_inputs, train_masks, train_labels, train_ids = pickle.load(f)
