@@ -588,7 +588,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--seq_length", type=int, default=512, required=False)
     parser.add_argument("--max_length", type=int, default=1024, required=False)
-    parser.add_argument("--batch_size", type=int, default=32, required=False)
+    parser.add_argument("--batch_size", type=int, default=16, required=False)
     parser.add_argument("--learning_rate", type=float, default=3e-5, required=False)
     parser.add_argument("--dropout", type=float, default=0.2, required=False)
     parser.add_argument("--n_hidden", type=float, default=50, required=False)
