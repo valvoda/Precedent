@@ -531,7 +531,7 @@ class Classifier:
         else:
             loss_fn = nn.BCEWithLogitsLoss(reduction='none')
 
-        # set_seed(42)    # Set seed for reproducibility
+        self.set_seed(42)    # Set seed for reproducibility
         classifier, optimizer, scheduler = self.initialize_model(out_dim=out_dim, epochs=epochs, train_dataloader=train_dataloader, learning_rate=lr, dropout=dropout, n_hidden=n_hidden)
         val_loss, val_precission, val_recall, val_f1, test_loss, test_precission, test_recall, test_f1, model_name, all_test_losses, all_test_preds, all_test_truths = self.train(classifier, train_dataloader, val_dataloader,
                                                                                                                                                 test_dataloader, epochs=epochs, evaluation=True,
