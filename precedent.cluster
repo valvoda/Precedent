@@ -18,4 +18,4 @@ bsub -W $TIME \
      -R "select[gpu_model0==${GPU_MODEL}]" \
      -R "select[gpu_mtotal0>=30000]" \
      "conda activate precedent" \
-     "python precedent_longformer.py"
+     "python precedent_longformer.py --data_type 'facts'"
