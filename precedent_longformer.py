@@ -81,8 +81,8 @@ class Classifier:
         if torch.cuda.is_available():
             self.device = torch.device("cuda")
             print(f'There are {torch.cuda.device_count()} GPU(s) available.')
-            print('Device name:', torch.cuda.get_device_name(0))
-            print('Device name:', torch.cuda.get_device_name(1))
+            # print('Device name:', torch.cuda.get_device_name(0))
+            # print('Device name:', torch.cuda.get_device_name(1))
 
         else:
             print('No GPU available, using the CPU instead.')
