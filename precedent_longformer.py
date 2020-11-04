@@ -477,9 +477,12 @@ class Classifier:
             val_inputs, val_masks = val_inputs[:, :, :1536], val_masks[:, :, :1536]
             test_inputs, test_masks = test_inputs[:, :, :1536], test_masks[:, :, :1536]
         else:
-            train_inputs, train_masks = train_inputs[:, :, :1024], train_masks[:, :, :1024]
-            val_inputs, val_masks = val_inputs[:, :, :1024], val_masks[:, :, :1024]
-            test_inputs, test_masks = test_inputs[:, :, :1024], test_masks[:, :, :1024]
+            train_inputs, train_masks = train_inputs[:, :, :1536], train_masks[:, :, :1536]
+            val_inputs, val_masks = val_inputs[:, :, :1536], val_masks[:, :, :1536]
+            test_inputs, test_masks = test_inputs[:, :, :1536], test_masks[:, :, :1536]
+            # train_inputs, train_masks = train_inputs[:, :, :1024], train_masks[:, :, :1024]
+            # val_inputs, val_masks = val_inputs[:, :, :1024], val_masks[:, :, :1024]
+            # test_inputs, test_masks = test_inputs[:, :, :1024], test_masks[:, :, :1024]
 
         # old 1536
 
