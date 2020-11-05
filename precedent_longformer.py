@@ -473,9 +473,9 @@ class Classifier:
             val_inputs, val_masks = val_inputs[:, :, :512], val_masks[:, :, :512]
             test_inputs, test_masks = test_inputs[:, :, :512], test_masks[:, :, :512]
         elif data_type == "precedent_both":
-            train_inputs, train_masks = train_inputs[:, :, :1536], train_masks[:, :, :1536]
-            val_inputs, val_masks = val_inputs[:, :, :1536], val_masks[:, :, :1536]
-            test_inputs, test_masks = test_inputs[:, :, :1536], test_masks[:, :, :1536]
+            train_inputs, train_masks = train_inputs[:, :, :2560], train_masks[:, :, :2560]
+            val_inputs, val_masks = val_inputs[:, :, :2560], val_masks[:, :, :2560]
+            test_inputs, test_masks = test_inputs[:, :, :2560], test_masks[:, :, :2560]
         else:
             train_inputs, train_masks = train_inputs[:, :, :1536], train_masks[:, :, :1536]
             val_inputs, val_masks = val_inputs[:, :, :1536], val_masks[:, :, :1536]
