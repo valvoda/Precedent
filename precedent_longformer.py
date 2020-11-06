@@ -371,10 +371,6 @@ class Classifier:
 
             all_truths += b_labels.float().tolist()
 
-            # Calculate the f1_micro score
-            # f1 = f1_score(b_labels.cpu(), preds.cpu(), average="micro")
-            # val_f1_micro.append(f1)
-
             if binary:
                 all_labels += b_labels.cpu().tolist()
                 all_preds += preds.cpu().tolist()
@@ -385,21 +381,6 @@ class Classifier:
         # Compute the average accuracy and loss over the validation set.
         avg_val_loss = np.mean(val_loss)
         val_accuracy = np.mean(val_accuracy)
-
-        # tp, tn, fn, fp = 0, 0, 0, 0
-        # for label, pred in zip(all_labels, all_preds):
-        #     if label == 1 and pred == 1:
-        #         tp += 1
-        #     if label == 0 and pred == 0:
-        #         tn += 1
-        #     if label == 1 and pred == 0:
-        #         fn += 1
-        #     if label == 0 and pred == 1:
-        #         fp += 1
-        #
-        # precision = tp / (tp + fp)
-        # recall = tp / (tp + fn)
-        # f1 = 2 * (precision * recall) / (precision + recall)
 
         if binary:
             val_f1 = f1_score(all_labels, all_preds, average="macro") * 100
@@ -448,7 +429,6 @@ class Classifier:
 
                         sizes.append(len(text.split(" ")))
 
-        # print(tru_cnt, non_cnt)
         if binary:
             y = np.array(all_targets)
         else:
@@ -481,34 +461,9 @@ class Classifier:
             val_inputs, val_masks = val_inputs[:, :, :1024], val_masks[:, :, :1024]
             test_inputs, test_masks = test_inputs[:, :, :1024], test_masks[:, :, :1024]
 
-        # old 1536
-
-        # For testing purposes:
-        # train_inputs, train_masks = train_inputs[:10, :, :10], train_masks[:10, :, :10]
-        # val_inputs, val_masks = val_inputs[:10, :, :10], val_masks[:10, :, :10]
-        # test_inputs, test_masks = test_inputs[:10, :, :10], test_masks[:10, :, :10]
-        #
-        # train_labels = train_labels[:10, :]
-        # val_labels = val_labels[:10, :]
-        # test_labels = test_labels[:10, :]
-        #
-        # test_inputs = test_inputs.squeeze(1)
-        # train_inputs = train_inputs.squeeze(1)
-        # val_inputs = val_inputs.squeeze(1)
-        #
-        # test_masks = test_masks.squeeze(1)
-        # train_masks = train_masks.squeeze(1)
-        # val_masks = val_masks.squeeze(1)
-        #
-        # test_ids = test_ids[:10]
-        # END
-
         out_dim = len(train_labels[1])
         print("Classifying into: ", out_dim)
         print("DONE Loading")
-
-        # For fine-tuning BERT, the authors recommend a batch size of 16 or 32.
-        # batch_size = 16
 
         # Create the DataLoader for our training set
         train_data = TensorDataset(train_inputs, train_masks, train_labels)
