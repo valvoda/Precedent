@@ -477,12 +477,9 @@ class Classifier:
             val_inputs, val_masks = val_inputs[:, :, :2560], val_masks[:, :, :2560]
             test_inputs, test_masks = test_inputs[:, :, :2560], test_masks[:, :, :2560]
         else:
-            train_inputs, train_masks = train_inputs[:, :, :1536], train_masks[:, :, :1536]
-            val_inputs, val_masks = val_inputs[:, :, :1536], val_masks[:, :, :1536]
-            test_inputs, test_masks = test_inputs[:, :, :1536], test_masks[:, :, :1536]
-            # train_inputs, train_masks = train_inputs[:, :, :1024], train_masks[:, :, :1024]
-            # val_inputs, val_masks = val_inputs[:, :, :1024], val_masks[:, :, :1024]
-            # test_inputs, test_masks = test_inputs[:, :, :1024], test_masks[:, :, :1024]
+            train_inputs, train_masks = train_inputs[:, :, :1024], train_masks[:, :, :1024]
+            val_inputs, val_masks = val_inputs[:, :, :1024], val_masks[:, :, :1024]
+            test_inputs, test_masks = test_inputs[:, :, :1024], test_masks[:, :, :1024]
 
         # old 1536
 
@@ -534,7 +531,7 @@ class Classifier:
         else:
             loss_fn = nn.BCEWithLogitsLoss(reduction='none')
 
-        self.set_seed(42)    # Set seed for reproducibility
+        # self.set_seed(42)    # Set seed for reproducibility
         classifier, optimizer, scheduler = self.initialize_model(out_dim=out_dim, epochs=epochs, train_dataloader=train_dataloader, learning_rate=lr, dropout=dropout, n_hidden=n_hidden)
         val_loss, val_precission, val_recall, val_f1, test_loss, test_precission, test_recall, test_f1, model_name, all_test_losses, all_test_preds, all_test_truths = self.train(classifier, train_dataloader, val_dataloader,
                                                                                                                                                 test_dataloader, epochs=epochs, evaluation=True,
