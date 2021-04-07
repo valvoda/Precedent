@@ -148,7 +148,7 @@ def run():
         try:
             # out += test_stat(facts_label, b16_prec_facts_label, i, i)
             # out += test_stat(facts_label, b16_prec_args_label, i, i)
-            out += test_stat(b16_prec_args_label, b16_prec_facts_label, i, i)
+            test_stat(b16_prec_args_label, b16_prec_facts_label, i, i)
         except:
             pass
 

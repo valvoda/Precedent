@@ -79,7 +79,8 @@ def add_facts(src_path='ECHR_v2/train', out_path='ECHR_v2/train_augmented'):
     paths = ['ECHR_v2/train', 'ECHR_v2/dev', 'ECHR_v2/test']
     for case_path in paths:
         for item in tqdm(os.listdir(case_path)):
-            if item.endswith('.json'):
+            if item.endswith('.json'
+                             ):
                 with open(os.path.join(case_path, item), "r") as json_file:
                     data = json.load(json_file)
                     for d in data["case_no"].split(";"):
