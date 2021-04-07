@@ -1,9 +1,0 @@
-.gitignore
-/ECHR_v2/
-/pretokenized/
-/CorpusStats.ipynb
-/pretokenized.zip
-/models/
-/precedent_arguments_results.csv
-/results/
-/scripts/
