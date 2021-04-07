@@ -1,3 +1,4 @@
+.gitignore
 /ECHR_v2/
 /pretokenized/
 /CorpusStats.ipynb
